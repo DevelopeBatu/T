@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <curses.h>
 
 #define ctrl(x) ((x) & 0x1f)
@@ -10,6 +11,7 @@ typedef enum{
 } Mode;
 
 Mode mode = NORMAL;
+int QUIT  = 0;
 
 char *stringify_mode() {
     switch(mode) {
@@ -30,6 +32,8 @@ int main() {
     keypad(stdscr, TRUE);
     noecho();
     
+    char *buf = malloc(sizeof(char) * 1024);
+    size_t buf_s = 0;
 
     int row, col;
     getmaxyx(stdscr,row,col);
@@ -41,7 +45,8 @@ int main() {
 
     int x,y = 0;
     
-    while (ch != ctrl('q')){
+    while (ch != ctrl('q') && QUIT != 1){
+        refresh();
         mvprintw(row-1,0,stringify_mode());
         move(y,x);
         
@@ -50,6 +55,11 @@ int main() {
             case NORMAL:
                 if (ch == 'i'){
                     mode = INSERT;
+                } else if (ch == ctrl('s')){
+                    FILE *file = fopen("put.txt","w");
+                    fwrite(buf,buf_s,1,file);
+                    fclose(file);
+                    QUIT = 1;
                 }
                 break;
             case INSERT:
@@ -58,6 +68,7 @@ int main() {
                     getyx(stdscr, y,x);
                     move(y,x-1);
                     delch();
+                    buf[buf_s--] = ' ';
                 }else if(ch == ESC){
                     nodelay(stdscr,TRUE);
                     int n = getch();
@@ -69,6 +80,7 @@ int main() {
                     nodelay(stdscr,FALSE);
                 }
                 else{
+                    buf[buf_s++] = ch;
                     addch(ch);
                 }
                 break;
