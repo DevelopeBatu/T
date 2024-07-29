@@ -1,0 +1,99 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Fira Code', monospace; /* VS Code gibi bir font */
+  background-color: #1e1e1e; /* VS Code'un koyu teması */
+  color: #dcdcdc; /* Açık gri metin rengi */
+  display: flex;
+  height: 100vh;
+}
+
+.container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.sidebar {
+  width: 180px;
+  background-color: #2d2d2d; /* Koyu gri kenar çubuğu */
+  border-right: 1px solid #444; /* Daha koyu çizgi */
+  overflow: auto;
+  position: relative;
+  transition: width 0.1s ease;
+}
+
+.resizer {
+  width: 6px;
+  background-color: #444; /* Koyu gri renk */
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  cursor: ew-resize;
+  z-index: 1;
+}
+
+#folder-title {
+  padding: 10px;
+  border-bottom: 1px solid #444; /* Koyu sınır rengi */
+  background-color: #333; /* Koyu başlık arka planı */
+  font-size: 16px;
+  font-weight: bold;
+  color: #dcdcdc; /* Açık gri başlık metni */
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  padding: 8px 10px;
+}
+
+.folder-header {
+  font-weight: bold;
+  font-size: 13px;
+  padding: 8px 10px;
+  cursor: pointer;
+  color: #9cdcfe; /* VS Code'daki renk */
+  border-bottom: 1px solid #444; /* Koyu sınır rengi */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.folder-header:hover {
+  background-color: #444; /* Hover arka plan rengi */
+}
+
+.file-list {
+  display: none; /* Başlangıçta gizli */
+  margin-left: 20px;
+}
+
+.file-list li {
+  font-size: 12px;
+  color: #9cdcfe; /* VS Code renkleriyle uyumlu */
+  padding: 6px 10px;
+  border-bottom: 1px solid #555; /* Koyu sınır rengi */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.file-list li:hover {
+  background-color: #333; /* Hover arka plan rengi */
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  background-color: #1e1e1e; /* VS Code'un koyu teması */
+}
+
+.folder {
+  margin-bottom: 2px;
+}
