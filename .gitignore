@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Logs
 logs
 *.log
@@ -22,3 +23,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+=======
+build/
+test/
+>>>>>>> c18eeb12754a7c2d071cb1f5f1b2b84b43a13b05
