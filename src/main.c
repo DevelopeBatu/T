@@ -1,8 +1,11 @@
 #include <ncurses.h>
 #include "buffer.h"
+#include "mode.h"
 
 #define ctrl(x) ((x) & 0x1f)
 #define TAB_WIDTH 4
+
+MODE mode = NORMAL;
 
 int main() {
     int row, col;
@@ -17,13 +20,15 @@ int main() {
     getmaxyx(stdscr, row, col);
     init_buffer(&buffer, row, col);
 
+
     int ch = 0;
     int y = 0, x = 0;
 
     while (ch != ctrl('q')) {
         display_buffer(&buffer);
-        move(y, x);
         refresh();
+        mvprintw(row-1,0,modestr(mode));
+        move(y, x);
 
         // Insert
         ch = getch();
