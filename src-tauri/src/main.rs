@@ -1,8 +1,10 @@
+mod shortcuts;
 use tauri::Manager;
 use std::fs;
 use std::env;
 use std::path::PathBuf;
 use chrono::{DateTime, Utc};
+use shortcuts::*;
 
 #[derive(Debug, serde::Serialize)]
 struct FDir {
@@ -42,7 +44,7 @@ async fn list_dirs(path: Option<String>) -> Vec<FDir> {
             extension: file_ext,
             size: size.to_string(),
             last_modified: file_date.to_rfc3339(),
-            is_ftp: 0, // Bu alanı gerektiğinde güncelleyebilirsiniz
+            is_ftp: 0, 
         });
     }
 
@@ -54,14 +56,23 @@ async fn list_dirs(path: Option<String>) -> Vec<FDir> {
 #[tauri::command]
 async fn get_current_dir() -> String {
     match env::current_dir() {
-        Ok(path) => {println!("ok");path.display().to_string() },
-        Err(_) => String::from("Hata: Dizin alınamadı"), // Error message if the current directory cannot be obtained
+        Ok(path) => {path.display().to_string()},
+        Err(_) => String::from("Hata: Dizin alınamadı"),
     }
 }
 
+#[tauri::command]
+fn get_shortcuts() -> Shortcuts{
+    let config_path = "ema.toml";
+    let shortcuts = load_shortcuts(config_path);
+    shortcuts
+
+}
+
 fn main() {
+
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![list_dirs,get_current_dir])
+        .invoke_handler(tauri::generate_handler![list_dirs,get_current_dir,get_shortcuts])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
