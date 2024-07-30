@@ -13,6 +13,7 @@ pub struct Config {
 pub struct Shortcuts {
     #[allow(dead_code)]
     pub toggle_sidebar: String,
+    pub save:String,
 }
 
 pub fn load_shortcuts(path: &str) -> Shortcuts {

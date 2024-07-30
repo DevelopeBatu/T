@@ -7,3 +7,10 @@ pub fn read_file(path: &str) -> String{
     file
 }
 
+#[tauri::command]
+pub fn write_file(path: &str, contents: String) -> String {
+    match fs::write(path, contents) {
+        Ok(_) => "Başarıyla yazıldı".to_string(), 
+        Err(e) => format!("Yazma hatası: {}", e), 
+    }
+}

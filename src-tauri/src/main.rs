@@ -3,6 +3,7 @@ mod file;
 use tauri::Manager;
 use std::fs;
 use std::env;
+use std::path::Path;
 use chrono::{DateTime, Utc};
 use shortcuts::*;
 use file::*;
@@ -64,7 +65,7 @@ async fn get_current_dir() -> String {
 
 #[tauri::command]
 fn get_shortcuts() -> Shortcuts{
-    let config_path = "ema.toml";
+    let config_path = "/Users/muammer/Desktop/ema/src-tauri/ema.toml";
     let shortcuts = load_shortcuts(config_path);
     shortcuts
 
@@ -72,9 +73,14 @@ fn get_shortcuts() -> Shortcuts{
 
 
 fn main() {
-
+    let mut path_arg = std::env::args().nth(1).expect("Can't Read Path");
+    let path = Path::new(&path_arg);
+    if let Err(e) = env::set_current_dir(&path) {
+        eprintln!("Failed to set current directory: {}", e);
+        std::process::exit(1);
+    }
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![list_dirs,get_current_dir,get_shortcuts,read_file])
+        .invoke_handler(tauri::generate_handler![list_dirs,get_current_dir,get_shortcuts,read_file,write_file])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

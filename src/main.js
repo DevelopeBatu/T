@@ -4,6 +4,7 @@ const content = document.querySelector('.content-file');
 const folderContainer = document.querySelector('#folder-container');
 const title = document.querySelector("#folder-title");
 
+let curFile = null;
 
 resizer.addEventListener('mousedown', (e) => {
     e.preventDefault(); 
@@ -26,7 +27,11 @@ resizer.addEventListener('mousedown', (e) => {
 
 let currentPath = '.';
 
-async function loadContent(path,content) {
+async function loadContent(path) {
+  if (!content) {
+    console.error('Content element bulunamadı.');
+    return;
+  }
   try {
       content.value = '';
       const cont = await window.__TAURI__.invoke('read_file', { path });
@@ -38,6 +43,14 @@ async function loadContent(path,content) {
   }
 }
 
+async function saveFile(path, contents) {
+  try {
+      const result = await window.__TAURI__.invoke('write_file', { path, contents });
+      console.log(result);
+  } catch (error) {
+      console.error(error); 
+  }
+}
 
 
 async function loadDirectory(path) {
@@ -103,6 +116,7 @@ async function loadDirectory(path) {
             folderDiv.addEventListener("click", () => {
               if(dir.is_dir === 0) {
                  const con = loadContent(dir.path,content);
+                 curFile = dir.path;
               }
             });
         });
@@ -123,6 +137,9 @@ async function loadShortcuts() {
                     sidebar.style.display = isVisible ? 'none' : 'block';
                     content.style.flex = isVisible ? '1' : '0';
                 }
+                else if (e.ctrlKey && e.key === shortcuts.save) {
+                    saveFile(curFile,content.value);
+                }
             });
         } else {
             console.error('Shortcuts yapılandırması geçerli değil');
@@ -131,7 +148,6 @@ async function loadShortcuts() {
         console.error('Kısayollar yüklenemedi:', err);
     }
 }
-
 
 window.addEventListener('DOMContentLoaded', () => {
     loadDirectory(currentPath);
