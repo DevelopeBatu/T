@@ -1,10 +1,11 @@
 mod shortcuts;
+mod file;
 use tauri::Manager;
 use std::fs;
 use std::env;
-use std::path::PathBuf;
 use chrono::{DateTime, Utc};
 use shortcuts::*;
+use file::*;
 
 #[derive(Debug, serde::Serialize)]
 struct FDir {
@@ -69,10 +70,11 @@ fn get_shortcuts() -> Shortcuts{
 
 }
 
+
 fn main() {
 
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![list_dirs,get_current_dir,get_shortcuts])
+        .invoke_handler(tauri::generate_handler![list_dirs,get_current_dir,get_shortcuts,read_file])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

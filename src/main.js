@@ -1,6 +1,6 @@
 const resizer = document.querySelector('.resizer');
 const sidebar = document.querySelector('.sidebar');
-const content = document.querySelector('.content');
+const content = document.querySelector('.content-file');
 const folderContainer = document.querySelector('#folder-container');
 const title = document.querySelector("#folder-title");
 
@@ -25,6 +25,20 @@ resizer.addEventListener('mousedown', (e) => {
 });
 
 let currentPath = '.';
+
+async function loadContent(path,content) {
+  try {
+      content.value = '';
+      const cont = await window.__TAURI__.invoke('read_file', { path });
+      content.value = cont;
+      return content;
+  } catch (error) {
+      console.error('Dosya içeriği alınamadı:', error);
+      return 'Hata: İçerik alınamadı';
+  }
+}
+
+
 
 async function loadDirectory(path) {
     try {
@@ -68,6 +82,7 @@ async function loadDirectory(path) {
             fileList.className = 'file-list';
             folderDiv.appendChild(fileList);
 
+
             if (dir.is_dir === 1) {
                 folderHeader.addEventListener('click', () => {
                     const isVisible = fileList.style.display === 'block';
@@ -85,6 +100,11 @@ async function loadDirectory(path) {
             }
 
             folderContainer.appendChild(folderDiv);
+            folderDiv.addEventListener("click", () => {
+              if(dir.is_dir === 0) {
+                 const con = loadContent(dir.path,content);
+              }
+            });
         });
     } catch (err) {
         console.error('Dosyalar alınamadı:', err);
